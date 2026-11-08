@@ -39,7 +39,6 @@ variable "private_subnets" {
 
   validation {
     condition = var.need_single_ngw || (
-      length(var.private_subnets) == length(var.public_subnets) &&
       length(distinct([for subnet in var.public_subnets : subnet.availability_zone])) == length(var.public_subnets) &&
       alltrue([
         for subnet in var.private_subnets :
@@ -47,7 +46,7 @@ variable "private_subnets" {
       ])
     )
 
-    error_message = "When using multiple NAT Gateways, public and private subnet counts must be equal, each public subnet must be in its own Availability Zone, and each private subnet must have a public subnet in that same zone."
+    error_message = "When using one NAT gateway per Availability Zone, each public subnet must be in its own zone, and every private subnet must have a public subnet in that same zone. Private subnets can outnumber public subnets."
   }
 }
 
